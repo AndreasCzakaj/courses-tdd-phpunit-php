@@ -1,0 +1,36 @@
+{
+    "name": "binary-stars/tdd-phpunit-php",
+    "description": "TDD training course: PHPUnit basics (matchers, fibonacci)",
+    "type": "project",
+    "license": "MIT",
+    "require": {
+        "php": ">=8.2"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^11.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "BinaryStars\\Tdd\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "BinaryStars\\Tdd\\Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "test": "phpunit",
+        "test:dox": "phpunit --testdox",
+        "test:coverage": [
+            "@putenv XDEBUG_MODE=coverage",
+            "phpunit --coverage-text"
+        ]
+    },
+    "config": {
+        "platform": {
+            "php": "8.2.0"
+        },
+        "sort-packages": true
+    }
+}
