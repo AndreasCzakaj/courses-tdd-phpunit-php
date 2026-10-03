@@ -59,6 +59,13 @@ docker run --rm -it -v "$PWD":/app tdd-phpunit-php composer install
 docker run --rm -it -v "$PWD":/app tdd-phpunit-php composer test
 ```
 
+On Linux, add `-u "$(id -u):$(id -g)"` so that the files created in the container
+(`vendor/`, `.phpunit.cache/`) belong to you and not to `root`:
+
+``` Bash
+docker run --rm -it -u "$(id -u):$(id -g)" -v "$PWD":/app tdd-phpunit-php composer test
+```
+
 # Folder structure
 
 ```
