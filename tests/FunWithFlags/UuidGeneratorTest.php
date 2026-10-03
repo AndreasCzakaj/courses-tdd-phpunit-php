@@ -6,6 +6,8 @@ namespace BinaryStars\Tdd\Tests\FunWithFlags;
 
 use BinaryStars\Tdd\FunWithFlags\UuidGenerator;
 use BinaryStars\Tdd\FunWithFlags\UuidGeneratorNaiveRandomImpl;
+use BinaryStars\Tdd\FunWithFlags\UuidGeneratorUpperCaseDecoratorImpl;
+use BinaryStars\Tdd\FunWithFlags\UuidGeneratorWithDashesDecoratorImpl;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\TestDox;
@@ -34,9 +36,21 @@ class UuidGeneratorTest extends TestCase
 
         return [
             [$baseImpl, '/^[a-f0-9]{32}$/', 'lower case, no dashes'],
-            // [new ???, '/^[A-F0-9]{32}$/', 'upper case, no dashes'],
-            // [new ???, '/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/', 'lower case, with dashes'],
-            // [new ???, '/^[A-F0-9]{8}-[A-F0-9]{4}-[A-F0-9]{4}-[A-F0-9]{4}-[A-F0-9]{12}$/', 'upper case, with dashes'],
+            [
+                new UuidGeneratorUpperCaseDecoratorImpl($baseImpl),
+                '/^[A-F0-9]{32}$/',
+                'upper case, no dashes',
+            ],
+            [
+                new UuidGeneratorWithDashesDecoratorImpl($baseImpl),
+                '/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/',
+                'lower case, with dashes',
+            ],
+            [
+                new UuidGeneratorWithDashesDecoratorImpl(new UuidGeneratorUpperCaseDecoratorImpl($baseImpl)),
+                '/^[A-F0-9]{8}-[A-F0-9]{4}-[A-F0-9]{4}-[A-F0-9]{4}-[A-F0-9]{12}$/',
+                'upper case, with dashes',
+            ],
         ];
     }
 
