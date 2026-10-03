@@ -73,10 +73,12 @@ src/                    production code, namespace BinaryStars\Tdd
   Hello.php
   Matchers/
   Fibonacci/
+  FunWithFlags/           "Fun With Flags": decorator pattern
 tests/                  test code, namespace BinaryStars\Tdd\Tests, files must be named *Test.php
   HelloTest.php
   Matchers/
   Fibonacci/
+  FunWithFlags/
 resources/              test data
 composer.json           dependencies, autoloading (PSR-4), scripts
 phpunit.xml             PHPUnit configuration
