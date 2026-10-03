@@ -25,42 +25,57 @@ class CollectionMatchersTest extends TestCase
     #[Test]
     public function shouldContain3Elements(): void
     {
-        self::markTestIncomplete('list should contain 3 elements');
+        self::assertCount(3, $this->list);
     }
 
     #[Test]
     public function shouldContainA(): void
     {
-        self::markTestIncomplete('list should contain "a"');
+        self::assertContains('a', $this->list);
     }
 
     #[Test]
     public function shouldNotContainD(): void
     {
-        self::markTestIncomplete('list should not contain "d"');
+        self::assertNotContains('d', $this->list);
     }
 
     #[Test]
     public function shouldContainCAndA(): void
     {
-        self::markTestIncomplete('list should contain "c" and "a"');
+        self::assertContains('c', $this->list);
+        self::assertContains('a', $this->list);
+
+        // alternative: 1 expression
+        self::assertEmpty(array_diff(['c', 'a'], $this->list));
     }
 
     #[Test]
     public function shouldNotContainDuplicates(): void
     {
-        self::markTestIncomplete('list should not contain duplicates');
+        self::assertSame($this->list, array_unique($this->list));
     }
 
     #[Test]
     public function more(): void
     {
-        self::markTestIncomplete('list should be precisely a, b, c ... but also loosely c, a, b');
+        // precisely: same items, same order
+        self::assertSame(['a', 'b', 'c'], $this->list);
+        // loosely: same items, any order
+        self::assertEqualsCanonicalizing(['c', 'a', 'b'], $this->list);
+        // contains any of
+        self::assertNotEmpty(array_intersect(['c', 'a', 'b', 'd'], $this->list));
+        // all items have the same type
+        self::assertContainsOnlyString($this->list);
     }
 
     #[Test]
     public function map(): void
     {
-        self::markTestIncomplete('map should have key "k1", no key "xxx", value "v2", no value "yyy", and item k2 => v2');
+        self::assertArrayHasKey('k1', $this->map);
+        self::assertArrayNotHasKey('xxx', $this->map);
+        self::assertContains('v2', $this->map);
+        self::assertNotContains('yyy', $this->map);
+        self::assertSame('v2', $this->map['k2']);
     }
 }

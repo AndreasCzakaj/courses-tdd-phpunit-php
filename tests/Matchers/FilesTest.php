@@ -36,15 +36,22 @@ class FilesTest extends TestCase
     #[Test]
     public function txtFileShouldExistAndContainFirstAndSecondLine(): void
     {
-        // "The first line"
-        // "The second line"
-        self::markTestIncomplete('newFile should exist and contain the first and second line');
+        self::assertFileExists($this->newFile);
+        self::assertFileIsReadable($this->newFile);
+
+        $content = file_get_contents($this->newFile);
+        self::assertStringContainsString('The first line', $content);
+        self::assertStringContainsString('The second line', $content);
+
+        // whole content in one go
+        self::assertStringEqualsFile($this->newFile, "The first line\nThe second line\n");
     }
 
     #[Test]
     public function otherFileShouldNotExist(): void
     {
-        self::markTestIncomplete('some other file in the same folder should not exist');
+        self::assertFileDoesNotExist($this->tmpDir . '/otherFile.txt');
+        self::assertCount(1, glob($this->tmpDir . '/*'));
     }
 
     #[Test]
@@ -54,6 +61,26 @@ class FilesTest extends TestCase
         $json = file_get_contents(First::PPL_JSON);
 
         self::assertJson($json);
-        self::assertCount(1000, json_decode($json, true));
+        $people = json_decode($json, true);
+        self::assertCount(1000, $people);
+
+        // JSON is parsed into arrays, which are compared by value
+        self::assertSame(
+            [
+                'id' => 18,
+                'firstName' => 'Crawford',
+                'lastName' => 'Roisen',
+                'email' => 'croisenh@independent.co.uk',
+                'ipAddress' => '163.170.23.182',
+            ],
+            $people[17],
+        );
+
+        // or compare JSON with JSON: ignores formatting and key order
+        self::assertJsonStringEqualsJsonString(
+            '{"firstName": "Crawford", "id": 18, "lastName": "Roisen",
+              "email": "croisenh@independent.co.uk", "ipAddress": "163.170.23.182"}',
+            json_encode($people[17]),
+        );
     }
 }

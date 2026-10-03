@@ -8,6 +8,7 @@ use BinaryStars\Tdd\Matchers\First;
 use BinaryStars\Tdd\Matchers\Person;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
 
 class ObjectMatchersTest extends TestCase
 {
@@ -26,14 +27,13 @@ class ObjectMatchersTest extends TestCase
     #[Test]
     public function peopleShouldContain1000People(): void
     {
-        self::markTestIncomplete('people should contain 1000 people');
+        self::assertCount(1000, $this->people);
+        self::assertContainsOnlyInstancesOf(Person::class, $this->people);
     }
 
     #[Test]
     public function testFirstPerson(): void
     {
-        self::markTestIncomplete('first person should have the expected values, field by field');
-
         $expected = new Person(
             id: 1,
             firstName: 'Skippy',
@@ -41,13 +41,20 @@ class ObjectMatchersTest extends TestCase
             email: 'srayne0@dot.gov',
             ipAddress: '229.183.132.150',
         );
+
+        self::assertSame($expected->id, $this->firstPerson->id);
+        self::assertSame($expected->firstName, $this->firstPerson->firstName);
+        self::assertSame($expected->lastName, $this->firstPerson->lastName);
+        self::assertSame($expected->email, $this->firstPerson->email);
+        self::assertSame($expected->ipAddress, $this->firstPerson->ipAddress);
+
+        // batch!
+        self::assertEquals($expected, $this->firstPerson);
     }
 
     #[Test]
     public function testFirstPersonInOneGo(): void
     {
-        self::markTestIncomplete('first person should equal the expected person, in one go');
-
         $expected = new Person(
             id: 1,
             firstName: 'Skippy',
@@ -55,19 +62,59 @@ class ObjectMatchersTest extends TestCase
             email: 'srayne0@dot.gov',
             ipAddress: '229.183.132.150',
         );
+
+        // assertSame: === => for objects: the very same instance
+        self::assertNotSame($expected, $this->firstPerson);
+
+        // assertEquals: == => for objects: same class, same property values
+        self::assertEquals($expected, $this->firstPerson);
     }
 
     #[Test]
     public function testFirstPersonPartially(): void
     {
-        self::markTestIncomplete('first person should match id, firstName and lastName only');
-
         $expected = new Person(id: 1, firstName: 'Skippy', lastName: 'Rayne');
+
+        // variant 1: selected fields
+        self::assertArrayIsEqualToArrayOnlyConsideringListOfKeys(
+            (array) $expected,
+            (array) $this->firstPerson,
+            ['id', 'firstName', 'lastName'],
+        );
+
+        // variant 2: subtracted fields
+        self::assertArrayIsEqualToArrayIgnoringListOfKeys(
+            (array) $expected,
+            (array) $this->firstPerson,
+            ['email', 'ipAddress'],
+        );
+
+        // variant 3: compact
+        self::assertSame(
+            [1, 'Skippy', 'Rayne'],
+            [$this->firstPerson->id, $this->firstPerson->firstName, $this->firstPerson->lastName],
+        );
     }
+
+    // Testing exceptions: tell PHPUnit what to expect BEFORE the action.
+    // The test ends with the exception => only 1 variant per test
 
     #[Test]
     public function testGetPersonThrowsException(): void
     {
-        self::markTestIncomplete('getPerson should throw a RuntimeException with message "oops" (2 variants)');
+        // variant 1
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('oops');
+
+        $this->first->getPerson();
+    }
+
+    #[Test]
+    public function testGetPersonThrowsExceptionObject(): void
+    {
+        // variant 2
+        $this->expectExceptionObject(new RuntimeException('oops'));
+
+        $this->first->getPerson();
     }
 }

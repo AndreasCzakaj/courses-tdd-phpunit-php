@@ -22,60 +22,84 @@ class StringMatchersTest extends TestCase
     #[Test]
     public function shouldNotBeNull(): void
     {
-        self::markTestIncomplete('email should not be null');
+        self::assertNotNull($this->email);
     }
 
     #[Test]
     public function shouldBeAString(): void
     {
-        self::markTestIncomplete('email should be a string');
+        self::assertIsString($this->email);
     }
 
     #[Test]
     public function shouldBeAndreasCzakaj(): void
     {
-        self::markTestIncomplete('email should be andreas.czakaj@binary-stars.eu');
+        // assertSame: === (type + value), assertEquals: == (loose)
+        self::assertSame('andreas.czakaj@binary-stars.eu', $this->email);
+        self::assertEqualsIgnoringCase('ANDREAS.czakaj@binary-stars.eu', $this->email);
     }
 
     #[Test]
     public function shouldStartWithAndreas(): void
     {
-        self::markTestIncomplete('email should start with "andreas"');
+        self::assertStringStartsWith('andreas', $this->email);
     }
 
     #[Test]
     public function shouldEndWithDotEu(): void
     {
-        self::markTestIncomplete('email should end with ".eu"');
+        self::assertStringEndsWith('.eu', $this->email);
     }
 
     #[Test]
     public function shouldNotEndWithDotCom(): void
     {
-        self::markTestIncomplete('email should not end with ".com"');
+        self::assertStringEndsNotWith('.com', $this->email);
     }
 
     #[Test]
     public function shouldContainBinary(): void
     {
-        self::markTestIncomplete('email should contain "binary"');
+        self::assertStringContainsString('binary', $this->email);
     }
 
     #[Test]
     public function shouldContainAndreasAndStars(): void
     {
-        self::markTestIncomplete('email should contain "andreas" and "stars"');
+        self::assertThat($this->email, self::logicalAnd(
+            self::stringContains('andreas'),
+            self::stringContains('stars'),
+        ));
     }
 
     #[Test]
     public function shouldMatchRegex(): void
     {
-        self::markTestIncomplete('email should match regular expression "/^[a-z.@\-]+$/"');
+        // the last arg is the message, like AssertJ's `.as(...)`
+        self::assertMatchesRegularExpression(
+            '/^[0-9a-z.@\-]+$/',
+            $this->email,
+            'it should match super simplistic reg exp',
+        );
     }
 
     #[Test]
     public function shouldMatchAllInOne(): void
     {
-        self::markTestIncomplete('TODO: all of the above in 1 expression');
+        // every assertXyz(...) is a shortcut for assertThat($actual, constraint)
+        // ... and constraints can be combined
+        self::assertThat($this->email, self::logicalAnd(
+            self::logicalNot(self::isNull()),
+            self::isString(),
+            self::identicalTo('andreas.czakaj@binary-stars.eu'),
+            self::stringStartsWith('andreas'),
+            self::stringEndsWith('.eu'),
+            self::logicalNot(self::stringEndsWith('.com')),
+            self::stringContains('binary'),
+            self::matchesRegularExpression('/^[0-9a-z.@\-]+$/'),
+        ));
+
+        // Note: PHPUnit has no "soft assertions",
+        // i.e. a test always stops at its 1st failing assertion
     }
 }
