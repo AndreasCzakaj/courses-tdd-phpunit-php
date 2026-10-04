@@ -7,7 +7,8 @@
         "php": ">=8.2"
     },
     "require-dev": {
-        "phpunit/phpunit": "^11.5"
+        "phpunit/phpunit": "^11.5",
+        "squizlabs/php_codesniffer": "^4.0"
     },
     "autoload": {
         "psr-4": {
@@ -20,11 +21,17 @@
         }
     },
     "scripts": {
+        "lint": "phpcs",
         "test": "phpunit",
         "test:dox": "phpunit --testdox",
         "test:coverage": [
             "@putenv XDEBUG_MODE=coverage",
             "phpunit --coverage-text"
+        ],
+        "test:ci": [
+            "@putenv XDEBUG_MODE=coverage",
+            "phpunit --coverage-text --coverage-clover=clover.xml --coverage-cobertura=coverage.xml --log-junit=report.xml",
+            "@php bin/check-coverage.php clover.xml 90"
         ]
     },
     "config": {

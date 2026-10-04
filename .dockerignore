@@ -1,0 +1,7 @@
+.git
+vendor
+.phpunit.cache
+coverage
+clover.xml
+coverage.xml
+report.xml

@@ -36,6 +36,12 @@ composer test:dox               # same as: vendor/bin/phpunit --testdox
 composer test:coverage
 ```
 
+## Lint: coding standard PSR-12, cyclomatic complexity
+
+``` Bash
+composer lint                   # same as: vendor/bin/phpcs
+```
+
 ## Run a subset
 
 ``` Bash
@@ -66,6 +72,26 @@ On Linux, add `-u "$(id -u):$(id -g)"` so that the files created in the containe
 docker run --rm -it -u "$(id -u):$(id -g)" -v "$PWD":/app tdd-phpunit-php composer test
 ```
 
+# CI/CD
+
+`.gitlab-ci.yml` defines the GitLab pipeline: lint => test => package
+
+* **lint**: `composer lint`, any violation breaks the build (rules: `phpcs.xml`)
+* **test**: `composer test:ci`, all tests with coverage, less than 90% breaks the build
+* **package**: builds the Docker image of the "app" (`Dockerfile.app`), which prints a UUID
+
+On branch `main`, the pipeline is RED by design: the first test must fail.
+On branch `solution` it is GREEN.
+
+Run the steps locally:
+
+``` Bash
+composer lint
+composer test:ci
+docker build -f Dockerfile.app -t tdd-phpunit-php-app .
+docker run --rm tdd-phpunit-php-app
+```
+
 # Folder structure
 
 ```
@@ -82,4 +108,9 @@ tests/                  test code, namespace BinaryStars\Tdd\Tests, files must b
 resources/              test data
 composer.json           dependencies, autoloading (PSR-4), scripts
 phpunit.xml             PHPUnit configuration
+phpcs.xml               linter configuration
+bin/                    the "app" (uuid.php), CI helper
+.gitlab-ci.yml          CI/CD pipeline
+Dockerfile              development image: PHP + Composer + pcov
+Dockerfile.app          Docker image of the "app"
 ```
