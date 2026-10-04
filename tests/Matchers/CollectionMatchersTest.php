@@ -61,6 +61,8 @@ class CollectionMatchersTest extends TestCase
     #[Test]
     public function map(): void
     {
-        self::markTestIncomplete('map should have key "k1", no key "xxx", value "v2", no value "yyy", and item k2 => v2');
+        self::markTestIncomplete(
+            'map should have key "k1", no key "xxx", value "v2", no value "yyy", and item k2 => v2'
+        );
     }
 }

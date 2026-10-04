@@ -4,3 +4,6 @@ vendor/
 coverage/
 .idea/
 .vscode/
+clover.xml
+coverage.xml
+report.xml
