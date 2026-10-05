@@ -29,6 +29,11 @@
             "@putenv XDEBUG_MODE=coverage",
             "phpunit --coverage-text"
         ],
+        "uss": [
+            "Composer\\Config::disableProcessTimeout",
+            "@php bin/uss-seed.php",
+            "@php -S localhost:3000 bin/uss-server.php"
+        ],
         "test:ci": [
             "@putenv XDEBUG_MODE=coverage",
             "phpunit --coverage-text --coverage-clover=clover.xml --coverage-cobertura=coverage.xml --log-junit=report.xml",
