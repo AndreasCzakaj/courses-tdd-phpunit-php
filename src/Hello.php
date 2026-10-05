@@ -8,6 +8,6 @@ class Hello
 {
     public function answer(string $question): int
     {
-        return 42;
+        return 43;
     }
 }
