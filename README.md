@@ -65,6 +65,11 @@ docker run --rm -it -v "$PWD":/app tdd-phpunit-php composer install
 docker run --rm -it -v "$PWD":/app tdd-phpunit-php composer test
 ```
 
+For watch mode:
+``` Bash
+docker run --rm -it -v "$PWD":/app tdd-phpunit-php php vendor/bin/phpunit-watcher watch
+```
+
 On Linux, add `-u "$(id -u):$(id -g)"` so that the files created in the container
 (`vendor/`, `.phpunit.cache/`) belong to you and not to `root`:
 
